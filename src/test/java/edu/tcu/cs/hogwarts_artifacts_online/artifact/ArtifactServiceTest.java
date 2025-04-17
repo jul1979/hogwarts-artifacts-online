@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.verify;
 
 import edu.tcu.cs.hogwarts_artifacts_online.artifact.utils.IdWorker;
+import edu.tcu.cs.hogwarts_artifacts_online.system.ObjectNotFoundException;
 import edu.tcu.cs.hogwarts_artifacts_online.wizard.Wizard;
 
 @ExtendWith(MockitoExtension.class)
@@ -101,7 +102,7 @@ public class ArtifactServiceTest {
         });
 
         assertThat(thrown)
-                .isInstanceOf(ArtifactNotFoundException.class)
+                .isInstanceOf(ObjectNotFoundException.class)
                 .hasMessage("Could not find artifact with Id 1250808601744904192 :(");
 
         verify(artifactRepository, times(1)).findById("1250808601744904192");
@@ -144,7 +145,7 @@ public class ArtifactServiceTest {
         oldArtifact.setImageUrl("ImageUrl");
 
         Artifact update = new Artifact();
-        update.setId("1250808601744904192");
+        //update.setId("1250808601744904192");
         update.setName("Invisibility Cloak");
         update.setDescription("A new Description");
         update.setImageUrl("ImageUrl");
@@ -153,7 +154,8 @@ public class ArtifactServiceTest {
         given(this.artifactRepository.save(oldArtifact)).willReturn(oldArtifact);
 
         Artifact updatedArtifact = this.artifactService.update("1250808601744904192", update);
-        assertThat(updatedArtifact.getId()).isEqualTo(update.getId());
+        //assertThat(updatedArtifact.getId()).isEqualTo(update.getId());
+        assertThat(updatedArtifact.getId()).isEqualTo("1250808601744904192");
         assertThat(updatedArtifact.getDescription()).isEqualTo(update.getDescription());
         verify(artifactRepository, times(1)).findById("1250808601744904192");
         verify(artifactRepository, times(1)).save(oldArtifact);
@@ -169,7 +171,7 @@ public class ArtifactServiceTest {
 
         given(this.artifactRepository.findById("1250808601744904192")).willReturn(Optional.empty());
 
-        assertThrows(ArtifactNotFoundException.class, () -> {
+        assertThrows(ObjectNotFoundException.class, () -> {
             this.artifactService.update("1250808601744904192", update);
         });
 
@@ -198,7 +200,7 @@ public class ArtifactServiceTest {
         // Given
         given(this.artifactRepository.findById("1250808601744904192")).willReturn(Optional.empty());
         // when
-        assertThrows(ArtifactNotFoundException.class, () -> {
+        assertThrows(ObjectNotFoundException.class, () -> {
             this.artifactService.delete("1250808601744904192");
         });
         // then
