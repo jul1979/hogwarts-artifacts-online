@@ -25,12 +25,13 @@ public class WizardService {
     }
 
     public Wizard findById(Integer wizardId) {
-        return this.wizardRepository.findById(wizardId).orElseThrow(() -> new ObjectNotFoundException("wizard",wizardId));
+        return this.wizardRepository.findById(wizardId)
+                .orElseThrow(() -> new ObjectNotFoundException("wizard", wizardId));
     }
 
     public void delete(Integer wizardId) {
         Wizard wizardToBeDeleted = this.wizardRepository.findById(wizardId)
-                .orElseThrow(() -> new ObjectNotFoundException("wizard",wizardId));
+                .orElseThrow(() -> new ObjectNotFoundException("wizard", wizardId));
         wizardToBeDeleted.removeAllArtifact();
         this.wizardRepository.deleteById(wizardId);
     }
@@ -43,18 +44,22 @@ public class WizardService {
         return this.wizardRepository.findById(wizardId).map((oldWizard) -> {
             oldWizard.setName(update.getName());
             return this.wizardRepository.save(oldWizard);
-        }).orElseThrow(() -> new ObjectNotFoundException("wizard",wizardId));
+        }).orElseThrow(() -> new ObjectNotFoundException("wizard", wizardId));
     }
 
     public Wizard addArtifactToWizard(Integer wizardId, String artifactId) {
 
-        Artifact artifact = this.artifactRepository.findById(artifactId)
-                .orElseThrow(() -> new ObjectNotFoundException("artifact",artifactId));
+        Artifact artifactToBeAssigned = this.artifactRepository.findById(artifactId)
+                .orElseThrow(() -> new ObjectNotFoundException("artifact", artifactId));
 
         Wizard wizard = this.wizardRepository.findById(wizardId)
-                .orElseThrow(() -> new ObjectNotFoundException("wizard",wizardId));
+                .orElseThrow(() -> new ObjectNotFoundException("wizard", wizardId));
 
-        wizard.addArtifact(artifact); // Assign artifact to the new owner.
+        if (artifactToBeAssigned.getOwner() != null) {
+            artifactToBeAssigned.getOwner().removeArtifact(artifactToBeAssigned);
+        }
+
+        wizard.addArtifact(artifactToBeAssigned); // Assign artifact to the new owner.
 
         return this.wizardRepository.save(wizard);
 

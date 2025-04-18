@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("${server.servlet.context-path}/wizards")
+@RequestMapping("/wizards")
 public class WizardController {
 
     private final WizardService wizardService;
