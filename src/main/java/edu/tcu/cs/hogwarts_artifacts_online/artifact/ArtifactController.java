@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
-@RequestMapping("${server.servlet.context-path}/artifacts")
+@RequestMapping("/artifacts")
 public class ArtifactController {
 
     private final ArtifactRepository artifactRepository;
