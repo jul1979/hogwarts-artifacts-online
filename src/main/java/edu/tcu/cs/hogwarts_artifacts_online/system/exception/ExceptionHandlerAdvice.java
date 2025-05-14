@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -44,4 +49,47 @@ public class ExceptionHandlerAdvice {
         return new Result(false, StatusCode.INVALID_ARGUMENT, "Provided arguments are invalid, see data for details.",
                 map);
     }
+
+    @ExceptionHandler({ UsernameNotFoundException.class, BadCredentialsException.class })
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    Result handleAuthenticationException(Exception ex) {
+        return new Result(false, StatusCode.UNAUTHORIZED, "username or password is incorrect.", ex.getMessage());
+    }
+
+    @ExceptionHandler(AccountStatusException.class)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    Result handleAccountStatusException(AccountStatusException ex) {
+        return new Result(false, StatusCode.UNAUTHORIZED, "user account is abnormal.", ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidBearerTokenException.class)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    Result handleInvalidBearerTokenException(InvalidBearerTokenException ex) {
+        return new Result(false, StatusCode.UNAUTHORIZED,
+                "The access token you provided is expired,revoked,malformed,or invalid for other reasons.",
+                ex.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    Result handleAccessDeniedException(AccessDeniedException ex) {
+        return new Result(false, StatusCode.FORBIDDEN,
+                "No Permission.",
+                ex.getMessage());
+    }
+
+    /**
+     * Fallback handles any unhandled exceptions
+     * 
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    Result handleOtherException(Exception ex) {
+        return new Result(false, StatusCode.INTERNAL_SERVER_ERROR,
+                "A server internal error occurs.",
+                ex.getMessage());
+    }
+
 }
