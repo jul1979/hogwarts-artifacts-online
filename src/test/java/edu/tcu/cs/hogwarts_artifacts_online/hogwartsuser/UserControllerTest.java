@@ -2,7 +2,6 @@ package edu.tcu.cs.hogwarts_artifacts_online.hogwartsuser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.tcu.cs.hogwarts_artifacts_online.HogwartsArtifactsOnlineApplication;
 import edu.tcu.cs.hogwarts_artifacts_online.hogwartsuser.dto.UserDto;
 import edu.tcu.cs.hogwarts_artifacts_online.system.ObjectNotFoundException;
 import edu.tcu.cs.hogwarts_artifacts_online.system.StatusCode;
