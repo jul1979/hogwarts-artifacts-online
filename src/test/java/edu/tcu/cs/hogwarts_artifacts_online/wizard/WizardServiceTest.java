@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 import edu.tcu.cs.hogwarts_artifacts_online.artifact.Artifact;
 import edu.tcu.cs.hogwarts_artifacts_online.artifact.ArtifactRepository;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles(value = "dev")
 public class WizardServiceTest {
 
     @Mock

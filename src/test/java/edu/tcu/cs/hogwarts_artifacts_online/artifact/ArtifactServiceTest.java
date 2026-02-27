@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 import static org.mockito.Mockito.verify;
 
 import edu.tcu.cs.hogwarts_artifacts_online.artifact.utils.IdWorker;
@@ -27,6 +28,7 @@ import edu.tcu.cs.hogwarts_artifacts_online.system.ObjectNotFoundException;
 import edu.tcu.cs.hogwarts_artifacts_online.wizard.Wizard;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles(value = "dev")
 public class ArtifactServiceTest {
 
     @Mock
@@ -145,7 +147,7 @@ public class ArtifactServiceTest {
         oldArtifact.setImageUrl("ImageUrl");
 
         Artifact update = new Artifact();
-        //update.setId("1250808601744904192");
+        // update.setId("1250808601744904192");
         update.setName("Invisibility Cloak");
         update.setDescription("A new Description");
         update.setImageUrl("ImageUrl");
@@ -154,7 +156,7 @@ public class ArtifactServiceTest {
         given(this.artifactRepository.save(oldArtifact)).willReturn(oldArtifact);
 
         Artifact updatedArtifact = this.artifactService.update("1250808601744904192", update);
-        //assertThat(updatedArtifact.getId()).isEqualTo(update.getId());
+        // assertThat(updatedArtifact.getId()).isEqualTo(update.getId());
         assertThat(updatedArtifact.getId()).isEqualTo("1250808601744904192");
         assertThat(updatedArtifact.getDescription()).isEqualTo(update.getDescription());
         verify(artifactRepository, times(1)).findById("1250808601744904192");
