@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -28,6 +29,7 @@ import edu.tcu.cs.hogwarts_artifacts_online.system.StatusCode;
 @AutoConfigureMockMvc
 @DisplayName("Integration tests for Artifact API endpoints")
 @Tag("integration")
+@ActiveProfiles(value = "dev")
 public class ArtifactControllerIntegrationTest {
 
         @Autowired
@@ -49,7 +51,7 @@ public class ArtifactControllerIntegrationTest {
         }
 
         @Test
-        @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)//resets the database
+        @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD) // resets the database
         void testFindAllArtifactsSuccess() throws Exception {
                 this.mockMvc.perform(MockMvcRequestBuilders.get("/artifacts").accept(MediaType.APPLICATION_JSON))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.flag").value(true))
