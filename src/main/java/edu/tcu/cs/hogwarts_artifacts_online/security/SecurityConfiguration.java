@@ -4,6 +4,8 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -67,6 +69,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/users/**").hasAuthority("ROLE_admin")
                         .requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("ROLE_admin")
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                        .requestMatchers(EndpointRequest.to("health","info")).permitAll()
+                        .requestMatchers(EndpointRequest.toAnyEndpoint().excluding("health","info")).hasAuthority("ROLE_admin")
                         // Disallow everything else
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))// this is for H2-console browser
