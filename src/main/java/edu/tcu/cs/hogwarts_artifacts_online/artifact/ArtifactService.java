@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import edu.tcu.cs.hogwarts_artifacts_online.artifact.utils.IdWorker;
 import edu.tcu.cs.hogwarts_artifacts_online.system.ObjectNotFoundException;
+import io.micrometer.core.annotation.Timed;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -24,9 +25,10 @@ public class ArtifactService {
     public Artifact findById(String artifactId) {
         return this.artifactRepository.findById(artifactId)
                 .orElseThrow(
-                        () -> new ObjectNotFoundException("artifact",artifactId));
+                        () -> new ObjectNotFoundException("artifact", artifactId));
     }
 
+    @Timed(value = "findAllArtifactsService.time")
     public List<Artifact> findAll() {
         return this.artifactRepository.findAll();
     }
@@ -43,11 +45,12 @@ public class ArtifactService {
                     oldArtifact.setDescription(update.getDescription());
                     oldArtifact.setImageUrl(update.getImageUrl());
                     return this.artifactRepository.save(oldArtifact);
-                }).orElseThrow(() -> new ObjectNotFoundException("artifact",artifactId));
+                }).orElseThrow(() -> new ObjectNotFoundException("artifact", artifactId));
     }
 
     public void delete(String artifactId) {
-        this.artifactRepository.findById(artifactId).orElseThrow(() -> new ObjectNotFoundException("artifact",artifactId));
+        this.artifactRepository.findById(artifactId)
+                .orElseThrow(() -> new ObjectNotFoundException("artifact", artifactId));
         this.artifactRepository.deleteById(artifactId);
     }
 }
