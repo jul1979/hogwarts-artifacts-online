@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # ← LIGNE IMPORTANTE POUR WINDOWS
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana-enterprise
+    volumes:
+      - ./docker/grafana:/var/lib/grafana
+    env_file:
+      - ./docker/grafana/grafana-config.env
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - 3000:3000
+    networks:
+      - monitoring
+
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - 8025:8025
+      - 1025:1025
+    networks:
+      - monitoring
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
