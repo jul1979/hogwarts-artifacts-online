@@ -30,7 +30,7 @@ import edu.tcu.cs.hogwarts_artifacts_online.artifact.dto.ArtifactDto;
 import edu.tcu.cs.hogwarts_artifacts_online.system.ObjectNotFoundException;
 import edu.tcu.cs.hogwarts_artifacts_online.system.StatusCode;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.ai.openai.api-key=test-key")
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles(value = "dev")
 public class ArtifactControllerTest {
@@ -268,6 +268,22 @@ public class ArtifactControllerTest {
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.message")
                                                 .value("Could not find artifact with Id 1250808601744904191 :("))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+        }
+
+        @Test
+        void testSummarizeArtifactsSuccess() throws Exception {
+                // Given
+                given(this.artifactService.summarize(Mockito.anyList()))
+                                .willReturn("The summary includes six artifacts, owned by three different wizards.");
+
+                // When and then
+                this.mockMvc.perform(
+                                MockMvcRequestBuilders.get("/artifacts/summary").accept(MediaType.APPLICATION_JSON))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.flag").value(true))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(StatusCode.SUCCESS))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Summarize Success"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(
+                                                "The summary includes six artifacts, owned by three different wizards."));
         }
 
 }
