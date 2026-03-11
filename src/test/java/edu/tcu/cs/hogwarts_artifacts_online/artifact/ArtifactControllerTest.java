@@ -17,12 +17,16 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.util.LinkedMultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -131,20 +135,52 @@ public class ArtifactControllerTest {
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
         }
 
+        /*
+         * @Test
+         * void testFindAllArtifactsSuccess() throws Exception {
+         * 
+         * given(this.artifactService.findAll()).willReturn(this.artifacts);
+         * this.mockMvc.perform(MockMvcRequestBuilders.get("/artifacts")
+         * .accept(MediaType.APPLICATION_JSON))
+         * .andExpect(MockMvcResultMatchers.jsonPath("$.flag").value(true))
+         * .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(StatusCode.SUCCESS)
+         * )
+         * .andExpect(MockMvcResultMatchers.jsonPath("$.message").
+         * value("Find All Success"))
+         * .andExpect(MockMvcResultMatchers.jsonPath("$.data",
+         * Matchers.hasSize(this.artifacts.size())))
+         * .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id").value(
+         * "1250808601744904191"))
+         * .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].name").value(
+         * "Deluminator"))
+         * .andExpect(MockMvcResultMatchers.jsonPath("$.data[1].id").value(
+         * "1250808601744904192"))
+         * .andExpect(MockMvcResultMatchers.jsonPath("$.data[1].name")
+         * .value("Invisibility Cloak"));
+         * }
+         */
         @Test
         void testFindAllArtifactsSuccess() throws Exception {
-                given(this.artifactService.findAll()).willReturn(this.artifacts);
+
+                Pageable pageable = PageRequest.of(0, 20);
+                PageImpl<Artifact> artifactPage = new PageImpl<>(this.artifacts, pageable, this.artifacts.size());
+                given(this.artifactService.findAll(Mockito.any(Pageable.class))).willReturn(artifactPage);
+
+                LinkedMultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
+                requestParams.add("page", "0");
+                requestParams.add("size", "0");
+
                 this.mockMvc.perform(MockMvcRequestBuilders.get("/artifacts")
-                                .accept(MediaType.APPLICATION_JSON))
+                                .accept(MediaType.APPLICATION_JSON).params(requestParams))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.flag").value(true))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(StatusCode.SUCCESS))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Find All Success"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.data",
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content",
                                                 Matchers.hasSize(this.artifacts.size())))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].id").value("1250808601744904191"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.data[0].name").value("Deluminator"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.data[1].id").value("1250808601744904192"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.data[1].name")
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].id").value("1250808601744904191"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[0].name").value("Deluminator"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[1].id").value("1250808601744904192"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content[1].name")
                                                 .value("Invisibility Cloak"));
         }
 

@@ -57,7 +57,7 @@ public class ArtifactControllerIntegrationTest {
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.flag").value(true))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(StatusCode.SUCCESS))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Find All Success"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.data", Matchers.hasSize(6)));
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content", Matchers.hasSize(6)));
         }
 
         @Test
@@ -89,6 +89,6 @@ public class ArtifactControllerIntegrationTest {
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.flag").value(true))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(StatusCode.SUCCESS))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Find All Success"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.data", Matchers.hasSize(7)));
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content", Matchers.hasSize(7)));
         }
 }
