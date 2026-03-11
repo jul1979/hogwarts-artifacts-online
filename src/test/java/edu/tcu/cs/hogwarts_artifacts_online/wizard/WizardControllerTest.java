@@ -34,7 +34,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.ai.openai.api-key=test-key")
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles(value = "dev")
 public class WizardControllerTest {

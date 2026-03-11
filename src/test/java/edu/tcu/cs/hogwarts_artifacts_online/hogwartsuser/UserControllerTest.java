@@ -29,7 +29,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.ai.openai.api-key=test-key")
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles(value = "dev")
 class UserControllerTest {
