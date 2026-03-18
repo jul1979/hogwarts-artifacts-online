@@ -1,6 +1,7 @@
 package edu.tcu.cs.hogwarts_artifacts_online.artifact;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -28,7 +29,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/artifacts")
 public class ArtifactController {
 
-    private final ArtifactRepository artifactRepository;
+   // private final ArtifactRepository artifactRepository;
 
     private final ArtifactService artifactService;
     private final ArtifactToArtifactDtoConverter artifactToArtifactDtoConverter;
@@ -42,7 +43,7 @@ public class ArtifactController {
         this.artifactService = artifactService;
         this.artifactToArtifactDtoConverter = artifactToArtifactDtoConverter;
         this.artifactDtoToArtifactConverter = artifactDtoToArtifactConverter;
-        this.artifactRepository = artifactRepository;
+       // this.artifactRepository = artifactRepository;
         this.meterRegistry = meterRegistry;
     }
 
@@ -100,5 +101,12 @@ public class ArtifactController {
      * return null;
      * }
      */
+
+    @PostMapping("/search")
+    public Result findArtifactsByCriteria(@RequestBody Map<String, String> searchCriteria, Pageable pageable) {
+        Page<Artifact> artifactPage = this.artifactService.findByCriteria(searchCriteria, pageable);
+        Page<ArtifactDto> artifactDtoPage = artifactPage.map(this.artifactToArtifactDtoConverter::convert);
+        return new Result(true, StatusCode.SUCCESS, "Search Success", artifactDtoPage);
+    }
 
 }
