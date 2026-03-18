@@ -64,13 +64,15 @@ public class SecurityConfiguration {
         return http
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.GET, "/artifacts/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/artifacts/search").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**").hasAuthority("ROLE_admin")
                         .requestMatchers(HttpMethod.POST, "/users").hasAuthority("ROLE_admin")
                         .requestMatchers(HttpMethod.PUT, "/users/**").hasAuthority("ROLE_admin")
                         .requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("ROLE_admin")
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers(EndpointRequest.to("health","info","prometheus")).permitAll()
-                        .requestMatchers(EndpointRequest.toAnyEndpoint().excluding("health","info","prometheus")).hasAuthority("ROLE_admin")
+                        .requestMatchers(EndpointRequest.to("health", "info", "prometheus")).permitAll()
+                        .requestMatchers(EndpointRequest.toAnyEndpoint().excluding("health", "info", "prometheus"))
+                        .hasAuthority("ROLE_admin")
                         // Disallow everything else
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))// this is for H2-console browser
@@ -120,5 +122,4 @@ public class SecurityConfiguration {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }
-
 }
