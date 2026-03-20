@@ -1,0 +1,8 @@
+package edu.tcu.cs.hogwarts_artifacts_online.client.imagestorage;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+public interface ImageStorageClient {
+    String uploadImage(String containerName, String originalName, InputStream data, long length) throws IOException;
+}
