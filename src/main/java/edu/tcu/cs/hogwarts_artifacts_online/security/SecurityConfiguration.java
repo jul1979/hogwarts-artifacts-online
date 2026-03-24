@@ -41,13 +41,15 @@ public class SecurityConfiguration {
     private final CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
     private final CustomBearerTokenAuthenticationEntryPoint customBearerTokenAuthenticationEntryPoint;
     private final CustomBearerTokenAccessDeniedHandler customBearerTokenAccessDeniedHandler;
+    private UserRequestAuthorizationManager userRequestAuthorizationManager;
 
-    // public SecurityConfiguration(ArtifactController artifactController) throws
-    // Exception {
+
     public SecurityConfiguration(CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint,
             CustomBearerTokenAuthenticationEntryPoint customBearerTokenAuthenticationEntryPoint,
-            CustomBearerTokenAccessDeniedHandler customBearerTokenAccessDeniedHandler)
+            CustomBearerTokenAccessDeniedHandler customBearerTokenAccessDeniedHandler,
+            UserRequestAuthorizationManager userRequestAuthorizationManager)
             throws Exception {
+        this.userRequestAuthorizationManager = userRequestAuthorizationManager;
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
@@ -65,9 +67,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.GET, "/artifacts/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/artifacts/search").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/**").hasAuthority("ROLE_admin")
+                        .requestMatchers(HttpMethod.GET, "/users").hasAuthority("ROLE_admin")
+                        .requestMatchers(HttpMethod.GET, "/users/**").access(this.userRequestAuthorizationManager)//the authoorization rule is defined in the userRequestAuthorizationManager
                         .requestMatchers(HttpMethod.POST, "/users").hasAuthority("ROLE_admin")
-                        .requestMatchers(HttpMethod.PUT, "/users/**").hasAuthority("ROLE_admin")
+                        .requestMatchers(HttpMethod.PUT, "/users/**").access(this.userRequestAuthorizationManager)
                         .requestMatchers(HttpMethod.DELETE, "/users/**").hasAuthority("ROLE_admin")
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                         .requestMatchers(EndpointRequest.to("health", "info", "prometheus")).permitAll()
