@@ -8,6 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -154,35 +157,7 @@ class UserServiceTest {
         verify(this.userRepository, times(1)).save(newUser);
     }
 
-    @Test
-    void testUpdateSuccess() {
-        // Given
-        HogwartsUser oldUser = new HogwartsUser();
-        oldUser.setId(1);
-        oldUser.setUsername("john");
-        oldUser.setPassword("123456");
-        oldUser.setEnabled(true);
-        oldUser.setRoles("admin user");
-
-        HogwartsUser update = new HogwartsUser();
-        update.setUsername("john - update");
-        update.setPassword("123456");
-        update.setEnabled(true);
-        update.setRoles("admin user");
-
-        given(this.userRepository.findById(1)).willReturn(Optional.of(oldUser));
-        given(this.userRepository.save(oldUser)).willReturn(oldUser);
-
-        // When
-        HogwartsUser updatedUser = this.userService.update(1, update);
-
-        // Then
-        assertThat(updatedUser.getId()).isEqualTo(1);
-        assertThat(updatedUser.getUsername()).isEqualTo(update.getUsername());
-        verify(this.userRepository, times(1)).findById(1);
-        verify(this.userRepository, times(1)).save(oldUser);
-    }
-
+    
     @Test
     void testUpdateNotFound() {
         // Given
@@ -204,6 +179,82 @@ class UserServiceTest {
                 .isInstanceOf(ObjectNotFoundException.class)
                 .hasMessage("Could not find user with Id 1 :(");
         verify(this.userRepository, times(1)).findById(1);
+    }
+
+    @Test
+    void testUpdateByAdminSuccess() {
+        // Given
+        HogwartsUser oldUser = new HogwartsUser();
+        oldUser.setId(2);
+        oldUser.setUsername("eric");
+        oldUser.setPassword("654321");
+        oldUser.setEnabled(true);
+        oldUser.setRoles("user");
+
+        HogwartsUser update = new HogwartsUser();
+        update.setUsername("eric - update");
+        update.setPassword("654321");
+        update.setEnabled(true);
+        update.setRoles("admin user");
+
+        given(this.userRepository.findById(2)).willReturn(Optional.of(oldUser));
+        given(this.userRepository.save(oldUser)).willReturn(oldUser);
+
+        HogwartsUser hogwartsUser = new HogwartsUser();
+        hogwartsUser.setRoles("admin");
+        MyUserPrincipal myUserPrincipal = new MyUserPrincipal(hogwartsUser);
+
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(
+                new UsernamePasswordAuthenticationToken(myUserPrincipal, null, myUserPrincipal.getAuthorities()));
+        SecurityContextHolder.setContext(securityContext);
+
+        // When
+        HogwartsUser updatedUser = this.userService.update(2, update);
+
+        // Then
+        assertThat(updatedUser.getId()).isEqualTo(2);
+        assertThat(updatedUser.getUsername()).isEqualTo(update.getUsername());
+        verify(this.userRepository, times(1)).findById(2);
+        verify(this.userRepository, times(1)).save(oldUser);
+    }
+
+    @Test
+    void testUpdateByUserSuccess() {
+        // Given
+        HogwartsUser oldUser = new HogwartsUser();
+        oldUser.setId(2);
+        oldUser.setUsername("eric");
+        oldUser.setPassword("654321");
+        oldUser.setEnabled(true);
+        oldUser.setRoles("user");
+
+        HogwartsUser update = new HogwartsUser();
+        update.setUsername("eric - update");
+        update.setPassword("654321");
+        update.setEnabled(true);
+        update.setRoles("user");
+
+        given(this.userRepository.findById(2)).willReturn(Optional.of(oldUser));
+        given(this.userRepository.save(oldUser)).willReturn(oldUser);
+
+        HogwartsUser hogwartsUser = new HogwartsUser();
+        hogwartsUser.setRoles("user");
+        MyUserPrincipal myUserPrincipal = new MyUserPrincipal(hogwartsUser);
+
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(
+                new UsernamePasswordAuthenticationToken(myUserPrincipal, null, myUserPrincipal.getAuthorities()));
+        SecurityContextHolder.setContext(securityContext);
+
+        // When
+        HogwartsUser updatedUser = this.userService.update(2, update);
+
+        // Then
+        assertThat(updatedUser.getId()).isEqualTo(2);
+        assertThat(updatedUser.getUsername()).isEqualTo(update.getUsername());
+        verify(this.userRepository, times(1)).findById(2);
+        verify(this.userRepository, times(1)).save(oldUser);
     }
 
     @Test
