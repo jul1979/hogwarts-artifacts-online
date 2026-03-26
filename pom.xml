@@ -35,6 +35,43 @@
 
 		<dependency>
 			<groupId>com.azure.spring</groupId>
+			<artifactId>spring-cloud-azure-starter-data-redis-lettuce</artifactId>
+		</dependency>
+
+
+		<!-- 		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+		</dependency> -->
+		<dependency>
+			<groupId>com.redis</groupId>
+			<artifactId>testcontainers-redis</artifactId>
+			<version>2.2.2</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-testcontainers</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>testcontainers-junit-jupiter</artifactId>
+			<scope>test</scope>
+			<version>2.0.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.azure.spring</groupId>
 			<artifactId>spring-cloud-azure-starter-storage-blob</artifactId>
 		</dependency>
 
@@ -125,12 +162,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <!-- Source: https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus -->
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+		<!-- Source: https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.appland/appmap-agent -->
 		<dependency>
 			<groupId>com.appland</groupId>
@@ -148,16 +185,13 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-<dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-bom</artifactId>
-            <version>1.0.0</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-
-
-
+			<dependency>
+				<groupId>org.springframework.ai</groupId>
+				<artifactId>spring-ai-bom</artifactId>
+				<version>1.0.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -166,12 +200,12 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<executions>
-                    <execution>
-                        <goals>
-                            <goal>build-info</goal>
-                        </goals>
-                    </execution>
-                </executions>
+					<execution>
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>io.github.git-commit-id</groupId>

@@ -10,6 +10,7 @@ import edu.tcu.cs.hogwarts_artifacts_online.system.Result;
 import edu.tcu.cs.hogwarts_artifacts_online.system.StatusCode;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -76,6 +77,15 @@ public class UserController {
     public Result deleteUser(@PathVariable Integer userId) {
         this.userService.delete(userId);
         return new Result(true, StatusCode.SUCCESS, "Delete Success");
+    }
+
+    @PatchMapping("/{userId}/password")
+    public Result changePassword(@PathVariable Integer userId, @RequestBody Map<String, String> paswwordMap) {
+        String oldPassword = paswwordMap.get("oldPassword");
+        String newPassword = paswwordMap.get("newPassword");
+        String confirmeNewPassword = paswwordMap.get("confirmNewPassword");
+        this.userService.changePassword(userId, oldPassword, newPassword, confirmeNewPassword);
+        return new Result(true, StatusCode.SUCCESS, "Change Password Success", null);
     }
 
 }
