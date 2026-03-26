@@ -41,6 +41,10 @@ services:
       - 9411:9411
     networks:
       - monitoring
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
 
 networks:
   monitoring:

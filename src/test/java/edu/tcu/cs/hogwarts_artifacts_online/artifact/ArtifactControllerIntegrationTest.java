@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -26,12 +27,17 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.redis.testcontainers.RedisContainer;
 
 import edu.tcu.cs.hogwarts_artifacts_online.system.StatusCode;
 
 @SpringBootTest(properties = "spring.ai.openai.api-key=test-key")
+@Testcontainers
 @AutoConfigureMockMvc
 @DisplayName("Integration tests for Artifact API endpoints")
 @Tag("integration")
@@ -45,6 +51,10 @@ public class ArtifactControllerIntegrationTest {
         ObjectMapper objectMapper;
 
         String token;
+
+        @Container
+        @ServiceConnection
+        static RedisContainer RedisContainer = new RedisContainer(DockerImageName.parse("redis:6.2.6"));
 
         @BeforeEach
         void SetUp() throws Exception {
